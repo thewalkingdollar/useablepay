@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>useable pay - Tap. Pay. Done.</title>
+  <meta name="theme-color" content="#198A00">
+  <style>
+    :root { --mtn:#FFCC00; --airtel:#FF0000; --zamtel:#00A651; --green:#198A00; --bg:#F5F7F5; --card:#FFFFFF; --text:#111; --muted:#6B7280; --border:#E5E7EB; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 100px; }
+    header { background: var(--green); color: white; padding: 20px 16px 16px; position: sticky; top: 0; z-index: 10; }
+    header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+    header p { font-size: 13px; opacity: 0.9; margin-top: 4px; }
+    .container { padding: 16px; max-width: 480px; margin: 0 auto; }
+    .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .quick-card { background: var(--card); border-radius: 20px; padding: 18px 14px; text-align: center; border: 1.5px solid var(--border); cursor: pointer; transition: transform 0.1s; }
+    .quick-card:active { transform: scale(0.97); }
+    .quick-card .icon { font-size: 32px; margin-bottom: 8px; }
+    .quick-card .label { font-weight: 700; font-size: 14px; }
+    .quick-card .hint { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .quick-card.scan { background: #111; color: white; border-color: #111; }
+    .quick-card.cash { background: #FFF7ED; border-color: #FFD9A0; }
+    .quick-card.send { background: #EFF6FF; border-color: #BFDBFE; }
+    .quick-card.pay { background: #F0FDF4; border-color: #BBF7D0; }
+    .section-title { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin: 20px 0 10px; }
+    .card { background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 10px; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    .store-row { display: flex; justify-content: space-between; align-items: center; }
+    .store-name { font-size: 16px; font-weight: 700; }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-top: 4px; }
+    .badge.mtn { background: #FFF9C4; color: #7A6B00; }
+    .badge.airtel { background: #FFE4E6; color: #9F0712; }
+    .badge.zamtel { background: #DCFCE7; color: #166534; }
+    .agent-num { font-family: monospace; font-size: 13px; color: var(--muted); background: #F3F4F6; padding: 4px 8px; border-radius: 6px; }
+    .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+    .btn:active { opacity: 0.8; }
+    .btn-primary { background: var(--green); color: white; }
+    .btn-dark { background: #111; color: white; }
+    .btn-ghost { background: #F3F4F6; color: var(--text); }
+    .btn-sm { padding: 10px 14px; font-size: 14px; width: auto; }
+    .chips { display: flex; gap: 8px; margin: 8px 0 12px; flex-wrap: wrap; }
+    .chip { padding: 8px 14px; background: #F3F4F6; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent; }
+    .chip.active { background: var(--green); color: white; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .field input, .field select { width: 100%; padding: 14px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 16px; background: white; outline: none; transition: border-color 0.2s; }
+    .field input:focus, .field select:focus { border-color: var(--green); }
+    .field input::placeholder { color: #9CA3AF; }
+    .field .help { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+    .input-with-icon { position: relative; }
+    .input-with-icon input { padding-left: 44px; }
+    .input-with-icon .ico { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 18px; }
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.45); backdrop-filter: blur(6px); display: none; align-items: flex-end; z-index: 30; }
+    .modal.show { display: flex; }
+    .modal-card { background: white; width: 100%; max-width: 500px; margin: 0 auto; border-radius: 24px 24px 0 0; padding: 20px 16px 32px; max-height: 92vh; overflow-y: auto; animation: slideUp 0.3s ease; }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .modal-handle { width: 40px; height: 4px; background: #D1D5DB; border-radius: 2px; margin: 0 auto 16px; }
+    .modal-card h2 { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+    .modal-card .sub { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+    .ussd-box { background: #111; color: #00FF88; padding: 16px; border-radius: 12px; font-family: monospace; font-size: 18px; letter-spacing: 1px; text-align: center; margin: 14px 0; word-break: break-all; }
+    .row { display: flex; gap: 10px; }
+    .row > * { flex: 1; }
+    .toast { position: fixed; bottom: 20px; left: 16px; right: 16px; background: #111; color: white; padding: 14px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 50; transform: translateY(100px); opacity: 0; transition: all 0.3s; pointer-events: none; max-width: 480px; margin: 0 auto; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .empty { text-align: center; padding: 32px 16px; color: var(--muted); }
+    .empty .icon { font-size: 40px; margin-bottom: 12px; }
+    .tabs { display: flex; background: white; border-radius: 12px; padding: 4px; margin-bottom: 16px; border: 1px solid var(--border); }
+    .tab { flex: 1; padding: 10px; border: none; background: none; border-radius: 8px; font-weight: 700; font-size: 14px; color: var(--muted); cursor: pointer; }
+    .tab.active { background: var(--green); color: white; }
+    .hidden { display: none !important; }
+    video, canvas { width: 100%; border-radius: 16px; background: #111; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>useable pay</h1>
+    <p>Tap. Pay. Done. — Zambia Mobile Money</p>
+  </header>
+  <div class="container">
+    <div class="quick-grid">
+      <div class="quick-card scan" id="scanBtn">
+        <div class="icon">📷</div>
+        <div class="label">Scan Store</div>
+        <div class="hint">Point at till number</div>
+      </div>
+      <div class="quick-card pay" id="quickPayBtn">
+        <div class="icon">🛒</div>
+        <div class="label">Pay Store</div>
+        <div class="hint">Enter till / agent</div>
+      </div>
+      <div class="quick-card cash" id="cashOutBtn">
+        <div class="icon">💵</div>
+        <div class="label">Cash Out</div>
+        <div class="hint">Withdraw from agent</div>
+      </div>
+      <div class="quick-card send" id="sendMoneyBtn">
+        <div class="icon">📤</div>
+        <div class="label">Send Money</div>
+        <div class="hint">To any number</div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" id="storesTab">My Stores</button>
+      <button class="tab" id="txTab">History</button>
+    </div>
+    <div id="storesView">
+      <div id="stores"></div>
+      <div id="empty" class="empty">
+        <div class="icon">🏪</div>
+        <div style="font-weight:700; color: var(--text);">No stores yet</div>
+        <div style="font-size:13px; margin-top:4px;">Tap <b>+ Add Store</b> or <b>Scan Store</b> to save CHEERIBX etc</div>
+      </div>
+    </div>
+    <div id="txView" class="hidden">
+      <div id="txList"></div>
+      <div id="txEmpty" class="empty">
+        <div class="icon">🧾</div>
+        <div style="font-weight:700;">No transactions yet</div>
+        <div style="font-size:13px; margin-top:4px;">Your payments will appear here</div>
+      </div>
+    </div>
+  </div>
+  <button class="btn btn-primary" id="addBtn" style="position: fixed; bottom: 20px; left: 16px; right: 16px; max-width: 480px; margin: 0 auto; border-radius: 16px; box-shadow: 0 8px 20px rgba(25,138,0,0.3);">+ Add Store</button>
+
+  <div class="modal" id="addModal">
+    <div class="modal-card">
+      <div class="modal-handle"></div>
+      <h2 id="modalTitle">Add Store</h2>
+      <p class="sub">Save a shop so you can pay in 2 taps next time</p>
+      <div class="field">
+        <label>Store Name</label>
+        <div class="input-with-icon">
+          <span class="ico">🏪</span>
+          <input id="storeName" placeholder="e.g. CHEERIBX Levy Mall" autocomplete="off">
+        </div>
+        <div class="help">The name you see on the shop sign</div>
+      </div>
+      <div class="row">
+        <div class="field" style="flex:1.2">
+          <label>Network</label>
+          <select id="network">
+            <option value="airtel">Airtel Money</option>
+            <option value="mtn">MTN MoMo</option>
+            <option value="zamtel">Zamtel Kwacha</option>
+          </select>
+        </div>
+        <div class="field" style="flex:2">
+          <label>Till / Agent Number</label>
+          <input id="agentNum" placeholder="e.g. 889003070" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+        </div>
+      </div>
+      <div class="help" style="margin-top:-8px; margin-bottom:14px; font-size:11px; color: var(--muted);">Found on the sign near the counter • 6-10 digits</div>
+      <div class="row">
+        <button class="btn btn-ghost" id="cancelAdd">Cancel</button>
+        <button class="btn btn-primary" id="saveStore">Save Store</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="payModal">
+    <div class="modal-card">
+      <div class="modal-handle"></div>
+      <h2 id="payTitle">Pay Store</h2>
+      <p class="sub" id="paySub">Enter amount to pay</p>
+      <div class="field">
+        <label>Amount (ZMW)</label>
+        <div class="input-with-icon">
+          <span class="ico">K</span>
+          <input id="amount" placeholder="e.g. 50.00" inputmode="decimal" type="number" step="0.01" min="1">
+        </div>
+        <div class="chips" id="amountChips">
+          <div class="chip" data-amt="10">K10</div>
+          <div class="chip" data-amt="20">K20</div>
+          <div class="chip" data-amt="50">K50</div>
+          <div class="chip" data-amt="100">K100</div>
+          <div class="chip" data-amt="200">K200</div>
+        </div>
+      </div>
+      <div id="ussdBox" class="hidden ussd-box"></div>
+      <div class="row">
+        <button class="btn btn-ghost" id="cancelPay">Back</button>
+        <button class="btn btn-primary" id="genUssd">Generate Code</button>
+      </div>
+      <div id="dialRow" class="hidden">
+        <div style="background:#F0FDF4; border:1px solid #BBF7D0; padding:12px; border-radius:12px; margin:14px 0; font-size:13px;">
+          📱 <b>Next:</b> Tap Dial → USSD screen opens → Enter your MoMo PIN on your phone
+        </div>
+        <div class="row">
+          <button class="btn btn-ghost" id="copyUssd">📋 Copy Code</button>
+          <button class="btn btn-dark" id="dialNow">📞 Dial Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="cashModal">
+    <div class="modal-card">
+      <div class="modal-handle"></div>
+      <h2>Cash Out</h2>
+      <p class="sub">Withdraw cash from a mobile money agent</p>
+      <div class="field">
+        <label>Agent Code / Number</label>
+        <div class="input-with-icon">
+          <span class="ico">👤</span>
+          <input id="agentCode" placeholder="e.g. 01234 or 0977123456" inputmode="numeric">
+        </div>
+        <div class="help">Ask agent for their code — usually 5 digits or phone number</div>
+      </div>
+      <div class="row">
+        <div class="field" style="flex:1">
+          <label>Network</label>
+          <select id="cashNetwork">
+            <option value="airtel">Airtel Money</option>
+            <option value="mtn">MTN MoMo</option>
+            <option value="zamtel">Zamtel Kwacha</option>
+          </select>
+        </div>
+        <div class="field" style="flex:1">
+          <label>Amount (ZMW)</label>
+          <input id="cashAmount" placeholder="e.g. 100" inputmode="decimal" type="number" step="0.01" min="1">
+        </div>
+      </div>
+      <div id="cashUssdBox" class="hidden ussd-box"></div>
+      <div class="row">
+        <button class="btn btn-ghost" id="cancelCash">Cancel</button>
+        <button class="btn btn-primary" id="genCashUssd">Generate Code</button>
+      </div>
+      <div id="cashDialRow" class="hidden">
+        <div class="row" style="margin-top:14px;">
+          <button class="btn btn-ghost" id="copyCash">📋 Copy</button>
+          <button class="btn btn-dark" id="dialCash">📞 Dial Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="sendModal">
+    <div class="modal-card">
+      <div class="modal-handle"></div>
+      <h2>Send Money</h2>
+      <p class="sub">Send to any mobile money number in Zambia</p>
+      <div class="field">
+        <label>Recipient Number</label>
+        <div class="input-with-icon">
+          <span class="ico">📱</span>
+          <input id="recipientNum" placeholder="e.g. 0977123456" inputmode="numeric" pattern="[0-9]*">
+        </div>
+        <div class="help">MTN: 076/077 • Airtel: 097/095 • Zamtel: 095 — we auto-detect network</div>
+      </div>
+      <div class="row">
+        <div class="field" style="flex:1">
+          <label>Amount (ZMW)</label>
+          <input id="sendAmount" placeholder="e.g. 50.00" inputmode="decimal" type="number" step="0.01" min="1">
+        </div>
+        <div class="field" style="flex:1">
+          <label>Sending From</label>
+          <select id="sendNetwork">
+            <option value="airtel">Airtel Money</option>
+            <option value="mtn">MTN MoMo</option>
+            <option value="zamtel">Zamtel Kwacha</option>
+          </select>
+        </div>
+      </div>
+      <div id="sendUssdBox" class="hidden ussd-box"></div>
+      <div class="row">
+        <button class="btn btn-ghost" id="cancelSend">Cancel</button>
+        <button class="btn btn-primary" id="genSendUssd">Generate Code</button>
+      </div>
+      <div id="sendDialRow" class="hidden">
+        <div class="row" style="margin-top:14px;">
+          <button class="btn btn-ghost" id="copySend">📋 Copy</button>
+          <button class="btn btn-dark" id="dialSend">📞 Dial Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="scanModal">
+    <div class="modal-card">
+      <div class="modal-handle"></div>
+      <h2>Scan Store Sign</h2>
+      <p class="sub">Point camera at the till number on the sign</p>
+      <video id="video" autoplay playsinline></video>
+      <canvas id="canvas" class="hidden"></canvas>
+      <p style="font-size:12px; color: var(--muted); margin: 12px 0;">Tip: Hold steady, good light, fill the number in frame</p>
+      <div class="row">
+        <button class="btn btn-ghost" id="cancelScan">Cancel</button>
+        <button class="btn btn-primary" id="captureBtn">📸 Capture</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
