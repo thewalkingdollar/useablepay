@@ -22,966 +22,448 @@
   font-family: "Optimistic Mono", ui-monospace, monospace;
 }
 </style>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#198A00">
-<meta name="description" content="useable pay - Quick USSD generator for Zambia mobile money">
-<title>useable pay - Tap. Pay. Done.</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --zm-green: #198A00;
-  --zm-green-dark: #136b00;
-  --zm-red: #DE0000;
-  --zm-orange: #FF7F00;
-  --zm-black: #111111;
-  --airtel-red: #EE1C25;
-  --mtn-yellow: #FFCC00;
-  --bg: #f7f8fa;
-  --card: #ffffff;
-  --text: #111827;
-  --text-muted: #6b7280;
-  --border: #e5e7eb;
-  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --radius: 16px;
-  --radius-sm: 12px;
-  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0f1115;
-    --card: #1a1d23;
-    --text: #f3f4f6;
-    --text-muted: #9ca3af;
-    --border: #2d3139;
-  }
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.5;
-  min-height: 100vh;
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-.container {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 0 16px 24px;
-}
-
-header {
-  background: linear-gradient(135deg, var(--zm-green) 0%, var(--zm-green-dark) 100%);
-  color: white;
-  padding: 24px 16px 20px;
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  box-shadow: var(--shadow);
-}
-
-.header-content {
-  max-width: 480px;
-  margin: 0 auto;
-}
-
-.app-name {
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-  margin-bottom: 2px;
-}
-
-.tagline {
-  font-size: 14px;
-  opacity: 0.95;
-  font-weight: 500;
-}
-
-.section {
-  margin-top: 24px;
-}
-
-.section-title {
-  font-size: 13px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-muted);
-  margin-bottom: 12px;
-  padding: 0 4px;
-}
-
-.card {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 16px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-  transition: var(--transition);
-}
-
-.store-card {
-  margin-bottom: 12px;
-  position: relative;
-  overflow: hidden;
-}
-
-.store-card:active {
-  transform: scale(0.98);
-}
-
-.store-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  gap: 8px;
-}
-
-.store-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.store-name {
-  font-size: 17px;
-  font-weight: 600;
-  margin-bottom: 4px;
-  word-break: break-word;
-}
-
-.store-details {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.network-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-.badge-airtel {
-  background: rgba(238, 28, 37, 0.1);
-  color: var(--airtel-red);
-}
-
-.badge-mtn {
-  background: rgba(255, 204, 0, 0.15);
-  color: #b38600;
-}
-
-@media (prefers-color-scheme: dark) {
-  .badge-mtn {
-    color: var(--mtn-yellow);
-  }
-}
-
-.till-number {
-  font-size: 14px;
-  color: var(--text-muted);
-  font-family: 'Courier New', monospace;
-}
-
-.store-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.btn {
-  border: none;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-weight: 600;
-  padding: 10px 12px;
-  cursor: pointer;
-  transition: var(--transition);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-family: inherit;
-  min-height: 44px;
-}
-
-.btn:active {
-  transform: scale(0.96);
-}
-
-.btn-primary {
-  background: var(--zm-green);
-  color: white;
-}
-
-.btn-primary:active {
-  background: var(--zm-green-dark);
-}
-
-.btn-secondary {
-  background: var(--bg);
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-
-.btn-icon {
-  padding: 10px;
-  min-width: 44px;
-}
-
-.btn-fav {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-}
-
-.btn-fav.active {
-  background: rgba(255, 127, 0, 0.1);
-  border-color: var(--zm-orange);
-  color: var(--zm-orange);
-}
-
-.btn-danger {
-  color: var(--zm-red);
-  background: rgba(222, 0, 0, 0.08);
-  border: 1px solid rgba(222, 0, 0, 0.2);
-}
-
-.fab {
-  position: fixed;
-  bottom: 24px;
-  right: 16px;
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
-  background: var(--zm-green);
-  color: white;
-  border: none;
-  box-shadow: var(--shadow-lg);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  z-index: 10;
-  transition: var(--transition);
-}
-
-.fab:active {
-  transform: scale(0.92);
-  background: var(--zm-green-dark);
-}
-
-.search-bar {
-  width: 100%;
-  padding: 14px 16px 14px 44px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--card);
-  color: var(--text);
-  font-size: 15px;
-  font-family: inherit;
-  transition: var(--transition);
-}
-
-.search-bar:focus {
-  outline: none;
-  border-color: var(--zm-green);
-  box-shadow: 0 0 0 3px rgba(25, 138, 0, 0.1);
-}
-
-.search-wrapper {
-  position: relative;
-  margin-bottom: 16px;
-}
-
-.search-icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  pointer-events: none;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 48px 24px;
-}
-
-.empty-icon {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 16px;
-  opacity: 0.3;
-}
-
-.empty-title {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.empty-text {
-  color: var(--text-muted);
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-
-/* Modal */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  z-index: 100;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-.modal-overlay.active {
-  opacity: 1;
-  pointer-events: all;
-}
-
-.modal {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--card);
-  border-radius: 24px 24px 0 0;
-  padding: 24px 16px calc(24px + env(safe-area-inset-bottom));
-  transform: translateY(100%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 101;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.modal-overlay.active .modal {
-  transform: translateY(0);
-}
-
-.modal-handle {
-  width: 36px;
-  height: 4px;
-  background: var(--border);
-  border-radius: 2px;
-  margin: 0 auto 20px;
-}
-
-.modal-title {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.modal-subtitle {
-  color: var(--text-muted);
-  font-size: 14px;
-  margin-bottom: 24px;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-label {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 8px;
-  color: var(--text);
-}
-
-input, select {
-  width: 100%;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--bg);
-  color: var(--text);
-  font-size: 16px;
-  font-family: inherit;
-  transition: var(--transition);
-}
-
-input:focus, select:focus {
-  outline: none;
-  border-color: var(--zm-green);
-  box-shadow: 0 0 0 3px rgba(25, 138, 0, 0.1);
-}
-
-.error-text {
-  color: var(--zm-red);
-  font-size: 13px;
-  margin-top: 6px;
-  display: none;
-}
-
-.error-text.show {
-  display: block;
-}
-
-.ussd-display {
-  background: var(--bg);
-  border: 2px dashed var(--border);
-  border-radius: var(--radius);
-  padding: 24px 16px;
-  text-align: center;
-  margin: 24px 0;
-}
-
-.ussd-code {
-  font-size: 24px;
-  font-weight: 700;
-  font-family: 'Courier New', monospace;
-  letter-spacing: 1px;
-  color: var(--zm-green);
-  word-break: break-all;
-  margin-bottom: 16px;
-}
-
-.notice {
-  background: rgba(255, 127, 0, 0.1);
-  border: 1px solid rgba(255, 127, 0, 0.3);
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  font-size: 13px;
-  color: var(--text);
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.toast {
-  position: fixed;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%) translateY(100px);
-  background: var(--zm-black);
-  color: white;
-  padding: 14px 20px;
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-lg);
-  z-index: 200;
-  opacity: 0;
-  transition: all 0.3s ease;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-.hide {
-  display: none !important;
-}
-
-.divider {
-  height: 1px;
-  background: var(--border);
-  margin: 16px 0;
-}
-
-@media (min-width: 480px) {
-  .modal {
-    left: 50%;
-    right: auto;
-    bottom: 50%;
-    transform: translate(-50%, -50%) scale(0.9);
-    width: 440px;
-    border-radius: 24px;
-    max-height: 80vh;
-  }
-  
-  .modal-overlay.active .modal {
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>useable pay - Tap. Pay. Done.</title>
+  <meta name="theme-color" content="#198A00">
+  <link rel="manifest" href="./manifest.json">
+  <style>
+    :root { --mtn:#FFCC00; --airtel:#FF0000; --zamtel:#00A651; --green:#198A00; --bg:#F6F7F9; --card:#FFFFFF; --text:#111; --muted:#666; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 80px; }
+    header { background: var(--green); color: white; padding: 16px; position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { font-size: 20px; font-weight: 700; }
+    header p { font-size: 13px; opacity: 0.9; margin-top: 2px; }
+    .header-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+    .container { padding: 16px; max-width: 500px; margin: 0 auto; }
+    .tabs { display: flex; background: var(--card); border-radius: 12px; padding: 4px; margin-bottom: 16px; }
+    .tab { flex: 1; padding: 10px; border: none; background: none; border-radius: 8px; font-weight: 600; color: var(--muted); cursor: pointer; }
+    .tab.active { background: var(--green); color: white; }
+    .card { background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .store-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; color: white; }
+    .badge.mtn { background: var(--mtn); color: #111; }
+    .badge.airtel { background: var(--airtel); }
+    .badge.zamtel { background: var(--zamtel); }
+    .agent { font-size: 14px; color: var(--muted); margin: 8px 0 12px; }
+    .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; }
+    .btn-primary { background: var(--green); color: white; }
+    .btn-secondary { background: #E8F5E8; color: var(--green); margin-top: 8px; }
+    .btn-scan { background: #111; color: white; margin-bottom: 16px; }
+    .fab { position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; border-radius: 50%; background: var(--green); color: white; font-size: 28px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); cursor: pointer; z-index: 20; }
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 30; padding: 16px; }
+    .modal.show { display: flex; }
+    .modal-card { background: white; border-radius: 16px; padding: 20px; width: 100%; max-width: 400px; max-height: 80vh; overflow-y: auto; }
+    .modal-card h2 { font-size: 18px; margin-bottom: 16px; }
+    input, select { width: 100%; padding: 12px; border: 1px solid #DDD; border-radius: 10px; font-size: 16px; margin-bottom: 12px; }
+    .row { display: flex; gap: 8px; }
+    .row > * { flex: 1; }
+    .hidden { display: none; }
+    .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #111; color: white; padding: 12px 20px; border-radius: 24px; font-size: 14px; z-index: 40; opacity: 0; transition: opacity 0.3s; }
+    .toast.show { opacity: 1; }
+    video, canvas { width: 100%; border-radius: 12px; margin-bottom: 12px; }
+    .scan-box { position: relative; }
+    .scan-box::after { content: ''; position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: var(--green); animation: scan 2s infinite; }
+    @keyframes scan { 0%,100% { top: 20%; } 50% { top: 80%; } }
+    .small { font-size: 12px; color: var(--muted); margin-top: 8px; }
+    .tx-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #EEE; }
+    .tx-item:last-child { border-bottom: none; }
+    .tx-left { flex: 1; }
+    .tx-store { font-weight: 600; }
+    .tx-date { font-size: 12px; color: var(--muted); }
+    .tx-amount { font-weight: 700; font-size: 16px; }
+    .tx-network { font-size: 11px; color: var(--muted); text-align: right; }
+    .stats { display: flex; gap: 8px; margin-bottom: 16px; }
+    .stat-card { flex: 1; background: var(--card); border-radius: 12px; padding: 12px; text-align: center; }
+    .stat-val { font-size: 20px; font-weight: 700; color: var(--green); }
+    .stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  </style>
 </head>
 <body>
-<header>
-  <div class="header-content">
-    <h1 class="app-name">useable pay</h1>
-    <p class="tagline">Tap. Pay. Done.</p>
-  </div>
-</header>
-
-<div class="container">
-  <div class="section">
-    <div class="search-wrapper">
-      <svg class="search-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-      </svg>
-      <input type="text" class="search-bar" id="searchInput" placeholder="Search stores...">
+  <div id="splash" style="position: fixed; inset: 0; background: linear-gradient(135deg, #198A00 0%, #0F5A00 100%); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: opacity 0.5s;">
+    <div style="text-align: center; animation: fadeIn 1s;">
+      <h1 style="font-size: 32px; font-weight: 800; margin-bottom: 8px;">useable pay</h1>
+      <p style="font-size: 16px; opacity: 0.9; margin-bottom: 24px;">Tap. Pay. Done.</p>
+      <div style="width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+      <p style="font-size: 14px; margin-top: 20px; opacity: 0.8;">Welcome, Blessed 🇿🇲</p>
     </div>
   </div>
+  <style>
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
 
-  <div id="favoritesSection" class="section hide">
-    <h2 class="section-title">Favorites</h2>
-    <div id="favoritesList"></div>
-  </div>
-
-  <div id="recentsSection" class="section hide">
-    <h2 class="section-title">Recent</h2>
-    <div id="recentsList"></div>
-  </div>
-
-  <div class="section">
-    <h2 class="section-title">All Stores</h2>
-    <div id="storesList"></div>
-    <div id="emptyState" class="card empty-state hide">
-      <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14v6m-3-3h6M6 10h2a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2zm10 0h2a2 2 0 002-2V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v2a2 2 0 002 2zM6 20h2a2 2 0 002-2v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2a2 2 0 002 2z"/>
-      </svg>
-      <h3 class="empty-title">No stores yet</h3>
-      <p class="empty-text">Add your first merchant or agent to start paying faster</p>
-      <button class="btn btn-primary" onclick="openAddModal()">
-        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        Add your first store
-      </button>
+  <header>
+    <div>
+      <h1>useable pay</h1>
+      <p>Tap. Pay. Done. — Mobile Money Quick Pay</p>
     </div>
-  </div>
-</div>
+    <button class="header-btn" id="historyBtn">History</button>
+  </header>
 
-<button class="fab" onclick="openAddModal()" aria-label="Add store">
-  <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-  </svg>
-</button>
+  <div class="container">
+    <div class="tabs">
+      <button class="tab active" id="storesTab">Stores</button>
+      <button class="tab" id="txTab">Transactions</button>
+    </div>
 
-<div class="modal-overlay" id="addModal" onclick="closeModalOnOverlay(event, 'addModal')">
-  <div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-handle"></div>
-    <h2 class="modal-title" id="addModalTitle">Add Store</h2>
-    <p class="modal-subtitle" id="addModalSubtitle">Save merchant details for quick payments</p>
-    
-    <form id="storeForm" onsubmit="saveStore(event)">
-      <input type="hidden" id="storeId">
-      <div class="form-group">
-        <label for="storeName">Store Name *</label>
-        <input type="text" id="storeName" placeholder="e.g. CHEERIBX" required>
-        <div class="error-text" id="nameError">Store name is required</div>
+    <div id="storesView">
+      <button class="btn btn-scan" id="scanBtn">📷 Scan Store Sign</button>
+      <div id="stores"></div>
+      <div id="empty" class="card" style="text-align: center; color: var(--muted); display: none;">
+        No stores yet. Tap + to add your first one, or scan a store sign.
       </div>
-      
-      <div class="form-group">
-        <label for="networkSelect">Network *</label>
-        <select id="networkSelect" required>
-          <option value="">Select network</option>
-          <option value="Airtel Money">Airtel Money</option>
-          <option value="MTN MoMo">MTN MoMo</option>
+    </div>
+
+    <div id="txView" class="hidden">
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-val" id="totalSpent">K0</div>
+          <div class="stat-label">Total Spent</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="txCount">0</div>
+          <div class="stat-label">Transactions</div>
+        </div>
+      </div>
+      <div id="txList"></div>
+      <div id="txEmpty" class="card" style="text-align: center; color: var(--muted); display: none;">
+        No transactions yet. Make your first payment!
+      </div>
+    </div>
+  </div>
+
+  <button class="fab" id="addBtn">+</button>
+
+  <!-- Add/Edit Modal -->
+  <div class="modal" id="addModal">
+    <div class="modal-card">
+      <h2 id="modalTitle">Add Store</h2>
+      <input id="storeName" placeholder="Store name e.g. CHEERIBX" maxlength="40">
+      <div class="row">
+        <select id="network">
+          <option value="mtn">MTN MoMo</option>
+          <option value="airtel">Airtel Money</option>
+          <option value="zamtel">Zamtel Kwacha</option>
         </select>
-        <div class="error-text" id="networkError">Please select a network</div>
+        <input id="agentNum" placeholder="Agent/Till number" inputmode="numeric" pattern="[0-9]*">
       </div>
-      
-      <div class="form-group">
-        <label for="tillNumber">Agent/Till Number *</label>
-        <input type="tel" id="tillNumber" placeholder="e.g. 889003070" inputmode="numeric" required>
-        <div class="error-text" id="tillError">Till number must be digits only</div>
+      <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+        <input type="checkbox" id="starred" style="width: auto;"> Star this store
+      </label>
+      <div class="row">
+        <button class="btn btn-secondary" id="cancelAdd">Cancel</button>
+        <button class="btn btn-primary" id="saveStore">Save</button>
       </div>
-      
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px;">
-        <button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button>
-        <button type="submit" class="btn btn-primary">Save Store</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<div class="modal-overlay" id="payModal" onclick="closeModalOnOverlay(event, 'payModal')">
-  <div class="modal" onclick="event.stopPropagation()">
-    <div class="modal-handle"></div>
-    <h2 class="modal-title" id="payStoreName">Store Name</h2>
-    <p class="modal-subtitle" id="payStoreDetails">Till: 000000000</p>
-    
-    <div id="payForm">
-      <div class="form-group">
-        <label for="payAmount">Amount (K) *</label>
-        <input type="number" id="payAmount" placeholder="0.00" step="0.01" min="0.01" inputmode="decimal" required>
-        <div class="error-text" id="amountError">Enter a valid amount</div>
-      </div>
-      
-      <div class="form-group" style="display: none;">
-        <label for="payPin">PIN</label>
-        <input type="password" id="payPin" placeholder="Optional: Enter on dial screen" maxlength="6" pattern="[0-9]*" inputmode="numeric">
-      </div>
-      
-      <div class="notice">
-        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink: 0; margin-top: 1px;">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-        </svg>
-        <span>For security, enter your PIN on the phone dialer after tapping "Dial Now". Your PIN is never stored.</span>
-      </div>
-    </div>
-    
-    <div id="ussdResult" class="hide">
-      <div class="ussd-display">
-        <div class="ussd-code" id="ussdCode"></div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-          <button class="btn btn-secondary" onclick="copyUssd()">
-            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-            </svg>
-            Copy
-          </button>
-          <button class="btn btn-primary" id="dialBtn">
-            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-            </svg>
-            Dial Now
-          </button>
-        </div>
-      </div>
-    </div>
-    
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px;" id="payFooter">
-      <button type="button" class="btn btn-secondary" onclick="closePayModal()">Cancel</button>
-      <button type="button" class="btn btn-primary" onclick="generateUssd()">Generate USSD</button>
-    </div>
-    
-    <div style="margin-top: 24px;" id="closeBtn" class="hide">
-      <button type="button" class="btn btn-secondary" style="width: 100%;" onclick="closePayModal()">Done</button>
     </div>
   </div>
-</div>
 
-<div class="toast" id="toast"></div>
+  <!-- Pay Modal -->
+  <div class="modal" id="payModal">
+    <div class="modal-card">
+      <h2 id="payTitle">Pay Store</h2>
+      <input id="amount" placeholder="Amount ZMW" inputmode="decimal" type="number" step="0.01" min="0.01">
+      <input id="pin" placeholder="Mobile Money PIN" inputmode="numeric" type="password" pattern="[0-9]*" maxlength="5">
+      <div id="ussdBox" class="hidden" style="background: #F0F0F0; padding: 12px; border-radius: 10px; margin: 12px 0; word-break: break-all; font-family: monospace;"></div>
+      <div class="row">
+        <button class="btn btn-secondary" id="cancelPay">Cancel</button>
+        <button class="btn btn-primary" id="genUssd">Generate USSD</button>
+      </div>
+      <div id="dialRow" class="hidden" style="margin-top: 12px;">
+        <button class="btn btn-primary" id="dialNow">Dial Now</button>
+        <button class="btn btn-secondary" id="copyUssd" style="margin-top: 8px;">Tap to Copy</button>
+        <p class="small">PIN is used only to generate the code. Never stored.</p>
+      </div>
+    </div>
+  </div>
 
-<script>
-const STORAGE_KEY = 'useablePayStores';
-let stores = [];
-let currentPayStore = null;
-let currentUssd = '';
+  <!-- Scan Modal -->
+  <div class="modal" id="scanModal">
+    <div class="modal-card">
+      <h2>Scan Store Sign</h2>
+      <div class="scan-box">
+        <video id="video" autoplay playsinline></video>
+      </div>
+      <canvas id="canvas" class="hidden"></canvas>
+      <p class="small">Point camera at the MTN/Airtel/Zamtel agent or till number on the store sign. We’ll grab the number for you.</p>
+      <div class="row">
+        <button class="btn btn-secondary" id="cancelScan">Cancel</button>
+        <button class="btn btn-primary" id="captureBtn">Capture</button>
+      </div>
+    </div>
+  </div>
 
-// Initialize with example store if first time
-function init() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (!saved) {
-    stores = [{
-      id: crypto.randomUUID(),
-      name: 'CHEERIBX',
-      network: 'Airtel Money',
-      till: '889003070',
-      favorite: false,
-      lastUsed: null
-    }];
-    saveStores();
-  } else {
-    stores = JSON.parse(saved);
-  }
-  render();
-  
-  document.getElementById('searchInput').addEventListener('input', (e) => {
-    render(e.target.value);
-  });
-}
+  <div class="toast" id="toast"></div>
 
-function saveStores() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(stores));
-}
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script>
+    const storesEl = document.getElementById('stores');
+    const emptyEl = document.getElementById('empty');
+    const addBtn = document.getElementById('addBtn');
+    const scanBtn = document.getElementById('scanBtn');
+    const addModal = document.getElementById('addModal');
+    const payModal = document.getElementById('payModal');
+    const scanModal = document.getElementById('scanModal');
+    const toast = document.getElementById('toast');
+    const storesTab = document.getElementById('storesTab');
+    const txTab = document.getElementById('txTab');
+    const storesView = document.getElementById('storesView');
+    const txView = document.getElementById('txView');
+    
+    let stores = JSON.parse(localStorage.getItem('useable_stores') || '[]');
+    let transactions = JSON.parse(localStorage.getItem('useable_tx') || '[]');
+    let currentStore = null;
+    let stream = null;
 
-function render(searchTerm = '') {
-  const filtered = searchTerm 
-    ? stores.filter(s => s.name.toLowerCase().includes(searchTerm.toLowerCase()) || s.till.includes(searchTerm))
-    : stores;
-  
-  const favorites = filtered.filter(s => s.favorite);
-  const recents = [...filtered]
-    .filter(s => s.lastUsed)
-    .sort((a, b) => new Date(b.lastUsed) - new Date(a.lastUsed))
-    .slice(0, 5);
-  
-  renderStoreList('favoritesList', favorites);
-  renderStoreList('recentsList', recents);
-  renderStoreList('storesList', filtered);
-  
-  document.getElementById('favoritesSection').classList.toggle('hide', favorites.length === 0);
-  document.getElementById('recentsSection').classList.toggle('hide', recents.length === 0);
-  document.getElementById('emptyState').classList.toggle('hide', stores.length > 0);
-}
+    // Seed CHEERIBX for Blessed
+    if (!stores.length) {
+      stores = [{ id: '1', name: 'CHEERIBX', network: 'airtel', agent: '889003070', starred: true }];
+      saveStores();
+    }
 
-function renderStoreList(containerId, list) {
-  const container = document.getElementById(containerId);
-  if (list.length === 0) {
-    container.innerHTML = '';
-    return;
-  }
-  
-  container.innerHTML = list.map(store => `
-    <div class="card store-card">
-      <div class="store-header">
-        <div class="store-info">
-          <div class="store-name">${escapeHtml(store.name)}</div>
-          <div class="store-details">
-            <span class="network-badge ${store.network === 'Airtel Money' ? 'badge-airtel' : 'badge-mtn'}">
-              ${store.network}
-            </span>
-            <span class="till-number">${store.till}</span>
+    function saveStores() {
+      localStorage.setItem('useable_stores', JSON.stringify(stores));
+      renderStores();
+    }
+
+    function saveTx() {
+      localStorage.setItem('useable_tx', JSON.stringify(transactions));
+      renderTx();
+    }
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function renderStores() {
+      stores.sort((a,b) => b.starred - a.starred || a.name.localeCompare(b.name));
+      storesEl.innerHTML = '';
+      if (!stores.length) { emptyEl.style.display = 'block'; return; }
+      emptyEl.style.display = 'none';
+      stores.forEach(s => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="store-name">${s.starred ? '⭐ ' : ''}${s.name}</div>
+          <span class="badge ${s.network}">${s.network === 'mtn' ? 'MTN MoMo' : s.network === 'airtel' ? 'Airtel Money' : 'Zamtel Kwacha'}</span>
+          <div class="agent">Agent/Till: ${s.agent}</div>
+          <button class="btn btn-primary" onclick="openPay('${s.id}')">Pay</button>
+          <button class="btn btn-secondary" onclick="editStore('${s.id}')">Edit</button>
+        `;
+        storesEl.appendChild(card);
+      });
+    }
+
+    function renderTx() {
+      const txList = document.getElementById('txList');
+      const txEmpty = document.getElementById('txEmpty');
+      const totalSpent = transactions.reduce((sum, tx) => sum + tx.amount, 0);
+      document.getElementById('totalSpent').textContent = `K${totalSpent.toFixed(2)}`;
+      document.getElementById('txCount').textContent = transactions.length;
+      
+      if (!transactions.length) { 
+        txList.innerHTML = '';
+        txEmpty.style.display = 'block'; 
+        return; 
+      }
+      txEmpty.style.display = 'none';
+      txList.innerHTML = '';
+      
+      [...transactions].reverse().forEach(tx => {
+        const date = new Date(tx.timestamp);
+        const item = document.createElement('div');
+        item.className = 'tx-item';
+        item.innerHTML = `
+          <div class="tx-left">
+            <div class="tx-store">${tx.storeName}</div>
+            <div class="tx-date">${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
           </div>
-        </div>
-      </div>
-      <div class="store-actions">
-        <button class="btn btn-primary" onclick="openPayModal('${store.id}')">
-          Pay
-        </button>
-        <button class="btn btn-icon btn-fav ${store.favorite ? 'active' : ''}" onclick="toggleFavorite('${store.id}')" aria-label="Favorite">
-          <svg width="18" height="18" fill="${store.favorite ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-          </svg>
-        </button>
-        <button class="btn btn-icon btn-secondary" onclick="openEditModal('${store.id}')" aria-label="Edit">
-          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-          </svg>
-        </button>
-        <button class="btn btn-icon btn-danger" onclick="deleteStore('${store.id}')" aria-label="Delete">
-          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-  `).join('');
-}
+          <div>
+            <div class="tx-amount">K${tx.amount.toFixed(2)}</div>
+            <div class="tx-network">${tx.network.toUpperCase()}</div>
+          </div>
+        `;
+        txList.appendChild(item);
+      });
+    }
 
-function openAddModal() {
-  document.getElementById('storeForm').reset();
-  document.getElementById('storeId').value = '';
-  document.getElementById('addModalTitle').textContent = 'Add Store';
-  document.getElementById('addModalSubtitle').textContent = 'Save merchant details for quick payments';
-  clearErrors();
-  openModal('addModal');
-}
+    // Tab switching
+    storesTab.onclick = () => {
+      storesTab.classList.add('active');
+      txTab.classList.remove('active');
+      storesView.classList.remove('hidden');
+      txView.classList.add('hidden');
+    };
+    txTab.onclick = () => {
+      txTab.classList.add('active');
+      storesTab.classList.remove('active');
+      txView.classList.remove('hidden');
+      storesView.classList.add('hidden');
+      renderTx();
+    };
+    document.getElementById('historyBtn').onclick = () => txTab.click();
 
-function openEditModal(id) {
-  const store = stores.find(s => s.id === id);
-  if (!store) return;
-  
-  document.getElementById('storeId').value = store.id;
-  document.getElementById('storeName').value = store.name;
-  document.getElementById('networkSelect').value = store.network;
-  document.getElementById('tillNumber').value = store.till;
-  document.getElementById('addModalTitle').textContent = 'Edit Store';
-  document.getElementById('addModalSubtitle').textContent = 'Update store details';
-  clearErrors();
-  openModal('addModal');
-}
+    // Add Store
+    addBtn.onclick = () => {
+      document.getElementById('modalTitle').textContent = 'Add Store';
+      document.getElementById('storeName').value = '';
+      document.getElementById('agentNum').value = '';
+      document.getElementById('starred').checked = false;
+      document.getElementById('saveStore').onclick = addStore;
+      addModal.classList.add('show');
+    };
 
-function saveStore(e) {
-  e.preventDefault();
-  clearErrors();
+    function addStore() {
+      const name = document.getElementById('storeName').value.trim();
+      const network = document.getElementById('network').value;
+      const agent = document.getElementById('agentNum').value.trim();
+      if (!name || !agent) return showToast('Fill all fields');
+      stores.push({ id: Date.now().toString(), name, network, agent, starred: document.getElementById('starred').checked });
+      saveStores();
+      addModal.classList.remove('show');
+      showToast('Store saved');
+    }
+
+    window.editStore = (id) => {
+      const s = stores.find(x => x.id === id);
+      document.getElementById('modalTitle').textContent = 'Edit Store';
+      document.getElementById('storeName').value = s.name;
+      document.getElementById('network').value = s.network;
+      document.getElementById('agentNum').value = s.agent;
+      document.getElementById('starred').checked = s.starred;
+      document.getElementById('saveStore').onclick = () => {
+        s.name = document.getElementById('storeName').value.trim();
+        s.network = document.getElementById('network').value;
+        s.agent = document.getElementById('agentNum').value.trim();
+        s.starred = document.getElementById('starred').checked;
+        saveStores();
+        addModal.classList.remove('show');
+        showToast('Store updated');
+      };
+      addModal.classList.add('show');
+    };
+
+    document.getElementById('cancelAdd').onclick = () => addModal.classList.remove('show');
+
+    // Pay Flow
+    window.openPay = (id) => {
+      currentStore = stores.find(x => x.id === id);
+      document.getElementById('payTitle').textContent = `Pay ${currentStore.name}`;
+      document.getElementById('amount').value = '';
+      document.getElementById('pin').value = '';
+      document.getElementById('ussdBox').classList.add('hidden');
+      document.getElementById('dialRow').classList.add('hidden');
+      document.getElementById('genUssd').classList.remove('hidden');
+      payModal.classList.add('show');
+    };
+
+    document.getElementById('genUssd').onclick = () => {
+      const amount = parseFloat(document.getElementById('amount').value);
+      const pin = document.getElementById('pin').value;
+      if (!amount || amount <= 0) return showToast('Enter valid amount');
+      if (!pin || pin.length < 4) return showToast('Enter PIN');
+      
+      let ussd = '';
+      if (currentStore.network === 'mtn') ussd = `*115*1*1*${currentStore.agent}*${amount}#`;
+      else if (currentStore.network === 'airtel') ussd = `*115*8*${currentStore.agent}*${amount}#`;
+      else if (currentStore.network === 'zamtel') ussd = `*344*${currentStore.agent}*${amount}#`;
+      
+      // Save transaction
+      transactions.push({
+        id: Date.now().toString(),
+        storeId: currentStore.id,
+        storeName: currentStore.name,
+        network: currentStore.network,
+        agent: currentStore.agent,
+        amount: amount,
+        timestamp: Date.now(),
+        ussd: ussd
+      });
+      saveTx();
+      
+      document.getElementById('ussdBox').textContent = ussd;
+      document.getElementById('ussdBox').classList.remove('hidden');
+      document.getElementById('dialRow').classList.remove('hidden');
+      document.getElementById('genUssd').classList.add('hidden');
+      
+      document.getElementById('dialNow').onclick = () => window.location.href = `tel:${encodeURIComponent(ussd)}`;
+      document.getElementById('copyUssd').onclick = () => {
+        navigator.clipboard.writeText(ussd);
+        showToast('USSD copied');
+      };
+    };
+
+    document.getElementById('cancelPay').onclick = () => payModal.classList.remove('show');
+
+    // Scan Flow
+    scanBtn.onclick = async () => {
+      scanModal.classList.add('show');
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        document.getElementById('video').srcObject = stream;
+      } catch(e) { showToast('Camera access denied'); scanModal.classList.remove('show'); }
+    };
+
+    document.getElementById('cancelScan').onclick = () => {
+      if (stream) stream.getTracks().forEach(t => t.stop());
+      scanModal.classList.remove('show');
+    };
+
+    document.getElementById('captureBtn').onclick = async () => {
+      const video = document.getElementById('video');
+      const canvas = document.getElementById('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      if (stream) stream.getTracks().forEach(t => t.stop());
+      scanModal.classList.remove('show');
+      showToast('Scanning number...');
+      
+      const { data: { text } } = await Tesseract.recognize(canvas, 'eng');
+      const match = text.match(/(\d{9,11})/);
+      let network = 'airtel';
+      if (/mtn|momo/i.test(text)) network = 'mtn';
+      else if (/zamtel|kwacha/i.test(text)) network = 'zamtel';
+      
+      if (match) {
+        document.getElementById('agentNum').value = match[1];
+        document.getElementById('network').value = network;
+        document.getElementById('modalTitle').textContent = 'Save Scanned Store';
+        document.getElementById('storeName').value = '';
+        document.getElementById('saveStore').onclick = () => {
+          const name = document.getElementById('storeName').value.trim() || 'Scanned Store';
+          stores.push({ id: Date.now().toString(), name, network, agent: match[1], starred: false });
+          saveStores();
+          addModal.classList.remove('show');
+          showToast('Store saved from scan');
+        };
+        addModal.classList.add('show');
+      } else {
+        showToast('No agent number found. Try again');
+      }
+    };
+
+    // PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+
+    renderStores();
+    renderTx();
   
-  const id = document.getElementById('storeId').value;
-  const name = document.getElementById('storeName').value.trim();
-  const network = document.getElementById('networkSelect').value;
-  const till = document.getElementById('tillNumber').value.trim();
-  
-  let hasError = false;
-  
-  if (!name) {
-    showError('nameError');
-    hasError = true;
-  }
-  if (!network) {
-    showError('networkError');
-    hasError = true;
-  }
-  if (!/^\d+$/.test(till)) {
-    showError('tillError');
-    hasError = true;
-  }
-  
-  if (hasError) return;
-  
-  if (id) {
-    const store = stores.find(s => s.id === id);
-    store.name = name;
-    store.network = network;
-    store.till = till;
-    showToast('Store updated');
-  } else {
-    stores.push({
-      id: crypto.randomUUID(),
-      name,
-      network,
-      till,
-      favorite: false,
-      lastUsed: null
+    // Splash screen - 6 seconds
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const splash = document.getElementById('splash');
+        if (splash) {
+          splash.style.opacity = '0';
+          setTimeout(() => splash.remove(), 500);
+        }
+      }, 6000);
     });
-    showToast('Store added');
-  }
-  
-  saveStores();
-  render(document.getElementById('searchInput').value);
-  closeModal('addModal');
-}
 
-function deleteStore(id) {
-  if (confirm('Delete this store?')) {
-    stores = stores.filter(s => s.id !== id);
-    saveStores();
-    render(document.getElementById('searchInput').value);
-    showToast('Store deleted');
-  }
-}
-
-function toggleFavorite(id) {
-  const store = stores.find(s => s.id === id);
-  if (store) {
-    store.favorite = !store.favorite;
-    saveStores();
-    render(document.getElementById('searchInput').value);
-    showToast(store.favorite ? 'Added to favorites' : 'Removed from favorites');
-  }
-}
-
-function openPayModal(id) {
-  const store = stores.find(s => s.id === id);
-  if (!store) return;
-  
-  currentPayStore = store;
-  document.getElementById('payStoreName').textContent = store.name;
-  document.getElementById('payStoreDetails').textContent = `${store.network} • Till: ${store.till}`;
-  document.getElementById('payAmount').value = '';
-  document.getElementById('payPin').value = '';
-  document.getElementById('payForm').classList.remove('hide');
-  document.getElementById('ussdResult').classList.add('hide');
-  document.getElementById('payFooter').classList.remove('hide');
-  document.getElementById('closeBtn').classList.add('hide');
-  clearErrors();
-  openModal('payModal');
-}
-
-function generateUssd() {
-  clearErrors();
-  const amount = document.getElementById('payAmount').value.trim();
-  
-  if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
-    showError('amountError');
-    return;
-  }
-  
-  const { network, till } = currentPayStore;
-  
-  // Generate USSD based on network
-  if (network === 'Airtel Money') {
-    currentUssd = `*115*8*${till}*${amount}#`;
-  } else if (network === 'MTN MoMo') {
-    currentUssd = `*115*1*1*${till}*${amount}#`;
-  }
-  
-  document.getElementById('ussdCode').textContent = currentUssd;
-  document.getElementById('payForm').classList.add('hide');
-  document.getElementById('ussdResult').classList.remove('hide');
-  document.getElementById('payFooter').classList.add('hide');
-  document.getElementById('closeBtn').classList.remove('hide');
-  
-  // Setup dial button
-  const dialBtn = document.getElementById('dialBtn');
-  dialBtn.onclick = () => {
-    window.location.href = `tel:${currentUssd.replace(/#/g, '%23')}`;
-  };
-  
-  // Update recents and clear any PIN data
-  currentPayStore.lastUsed = new Date().toISOString();
-  document.getElementById('payPin').value = ''; // Explicitly clear PIN
-  currentPayStore = null; // Clear reference
-  currentUssd = '';
-  
-  saveStores();
-  render(document.getElementById('searchInput').value);
-}
-
-function copyUssd() {
-  const code = document.getElementById('ussdCode').textContent;
-  navigator.clipboard.writeText(code).then(() => {
-    showToast('USSD code copied');
-  }).catch(() => {
-    showToast('Failed to copy');
-  });
-}
-
-function closePayModal() {
-  document.getElementById('payPin').value = '';
-  currentPayStore = null;
-  currentUssd = '';
-  closeModal('payModal');
-}
-
-function openModal(id) {
-  document.getElementById(id).classList.add('active');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeModal(id) {
-  document.getElementById(id).classList.remove('active');
-  document.body.style.overflow = '';
-}
-
-function closeModalOnOverlay(e, id) {
-  if (e.target === e.currentTarget) {
-    closeModal(id);
-  }
-}
-
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
-function showError(id) {
-  document.getElementById(id).classList.add('show');
-}
-
-function clearErrors() {
-  document.querySelectorAll('.error-text').forEach(el => el.classList.remove('show'));
-}
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-// PWA manifest hint
-if ('serviceWorker' in navigator) {
-  // Would register SW here in production
-}
-
-init();
-</script>
-<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+  </script>
 <script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
 </html>
