@@ -13,9 +13,4 @@ A mobile money quick-pay app for Zambia - MTN MoMo & Airtel Money
 - All data stored locally on your phone
 - PIN is never stored
 
-## Deploy to GitHub Pages
-1. Create new repo, upload index.html
-2. Settings → Pages → Deploy from main branch
-3. Open the URL → Add to Home Screen
-
 Built for Blessed in Lusaka 🇿🇲
